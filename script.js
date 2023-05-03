@@ -184,7 +184,7 @@ const findAverages = (population, social, timesToRun) => {
 
     let weeklyCollections = []
     let exportData = {
-        weeks: []
+        entries: []
     }
 
     for (let i = 0; i < timesToRun; i++) {
@@ -196,7 +196,10 @@ const findAverages = (population, social, timesToRun) => {
         percentInfected += vars.percentInfected
 
         weeklyCollections.push(vars.weeklyInfo)
-        exportData.weeks.push(vars.weeklyInfo)
+        exportData.entries.push({
+            title: `Simulation #${i+1}`,
+            data: vars.weeklyInfo
+        })
 
         console.log(`${i+1}/${timesToRun} Simulations completed`)
     }
