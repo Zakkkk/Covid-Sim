@@ -1,4 +1,11 @@
 // Zak Venter 03/05/23
+const prompt = require('prompt-sync')()
+var fs = require('fs');
+
+const inputPopulation = parseInt(prompt("population: "))
+const inputSocialDistancing = prompt("social distancing (y/n): ") == "y" ? true : false
+const inputTimesToRun = parseInt(prompt("times to run: "))
+
 
 // Utils
 let randomChance = (chance, functionToRun) => {
@@ -99,7 +106,7 @@ const createCollection = (population) => {
         peopleToBeInfected.push(person)
     }
 
-    console.log(`Created an array of ${peopleCollection.length} people.`)
+    // console.log(`Created an array of ${peopleCollection.length} people.`)
 }
 
 const begin = (population, isSocialDistancing) => {
@@ -109,6 +116,8 @@ const begin = (population, isSocialDistancing) => {
     peakInfected = 0
     
     currentInfections = 0
+
+    let weeklyInfo = []
 
     createCollection(population)
     
@@ -142,9 +151,11 @@ const begin = (population, isSocialDistancing) => {
             // console.log(`${currentInfections} = currentInfections`)
             // console.log(`${totalImmunity} = totalImmunity`)
             // weeklyNewCases = 
+            console.log(`${daysPassed/7} weeks past. ${100 - 100*(peopleToBeInfected.length/peopleCollection.length)}% affected`)
+            weeklyInfo.push(Math.round(((100 - 100*(peopleToBeInfected.length/peopleCollection.length)) * 100) / 100))
         }
 
-        if (currentInfections<=0) break;
+        if (currentInfections<0) break;
     }
 
     let percentInfected = 0
@@ -161,7 +172,7 @@ const begin = (population, isSocialDistancing) => {
     //     % infected: ${percentInfected * 100}
     // `)
 
-    return {daysPassed, totalDeaths, peakInfected, percentInfected}
+    return {daysPassed, totalDeaths, peakInfected, percentInfected, weeklyInfo}
 }
 
 const findAverages = (population, social, timesToRun) => {
@@ -170,6 +181,12 @@ const findAverages = (population, social, timesToRun) => {
     let peakInfected = 0
     let percentInfected = 0
     let vars = {}
+
+    let weeklyCollections = []
+    let exportData = {
+        weeks: []
+    }
+
     for (let i = 0; i < timesToRun; i++) {
         vars = begin(population, social)
 
@@ -177,6 +194,11 @@ const findAverages = (population, social, timesToRun) => {
         totalDeaths += vars.totalDeaths
         peakInfected += vars.peakInfected
         percentInfected += vars.percentInfected
+
+        weeklyCollections.push(vars.weeklyInfo)
+        exportData.weeks.push(vars.weeklyInfo)
+
+        console.log(`${i+1}/${timesToRun} Simulations completed`)
     }
 
     daysPassed /= timesToRun
@@ -184,5 +206,12 @@ const findAverages = (population, social, timesToRun) => {
     peakInfected /= timesToRun
     percentInfected /= timesToRun
 
+    fs.writeFile(`${population}_${social}_${timesToRun}_${new Date().getTime()}.json`, JSON.stringify(exportData), function (err) {
+        if (err) throw err
+        console.log('File created')
+    })
+
     return {daysPassed, totalDeaths, peakInfected, percentInfected}
 }
+
+console.log(findAverages(inputPopulation, inputSocialDistancing, inputTimesToRun))
