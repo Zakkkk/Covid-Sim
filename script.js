@@ -118,6 +118,7 @@ const begin = (population, isSocialDistancing) => {
     currentInfections = 0
 
     let weeklyInfo = []
+    let dailyInfection = []
 
     createCollection(population)
     
@@ -140,6 +141,7 @@ const begin = (population, isSocialDistancing) => {
         }
 
         if (infectedSum > peakInfected) peakInfected = infectedSum
+        dailyInfection.push(infectedSum)
 
         daysPassed++
         
@@ -172,7 +174,7 @@ const begin = (population, isSocialDistancing) => {
     //     % infected: ${percentInfected * 100}
     // `)
 
-    return {daysPassed, totalDeaths, peakInfected, percentInfected, weeklyInfo}
+    return {daysPassed, totalDeaths, peakInfected, percentInfected, weeklyInfo, dailyInfection}
 }
 
 const findAverages = (population, social, timesToRun) => {
@@ -198,7 +200,8 @@ const findAverages = (population, social, timesToRun) => {
         weeklyCollections.push(vars.weeklyInfo)
         exportData.entries.push({
             title: `Simulation #${i+1}`,
-            data: vars.weeklyInfo
+            weeklyAffected: vars.weeklyInfo,
+            dailyInfected: vars.dailyInfection
         })
 
         console.log(`${i+1}/${timesToRun} Simulations completed`)
