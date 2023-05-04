@@ -1,4 +1,40 @@
 // Zak Venter 03/05/23
+
+
+//        _..._
+//        .'     '.
+//        /`\     /`\    |\
+//        (__|     |__)|\  \\  /|
+//        (     "     ) \\ || //
+//        \         /   \\||//
+//        \   _   /  |\|`  /
+//         '.___.'   \____/
+//          (___)    (___)
+//        /`     `\  / /
+//        |         \/ /
+//        | |     |\  /
+//        | |     | "`
+//        | |     |
+//        | |     |
+//        |_|_____|
+//        (___)_____)
+//        /    \   |
+//        /   |\|   |
+//        //||\\  Y  |
+//        || || \\ |  |
+//        |/ \\ |\||  |
+//        \||__|__|
+//        (___|___)
+//        jgs  /   A   \
+//       /   / \   \
+//       \___/   \___/
+
+
+
+
+
+
+
 const prompt = require('prompt-sync')()
 var fs = require('fs');
 
@@ -213,7 +249,11 @@ const findAverages = (population, social, timesToRun) => {
     peakInfected /= timesToRun
     percentInfected /= timesToRun
 
-    fs.writeFile(`${population}_${social}_${timesToRun}_${new Date().getTime()}.json`, JSON.stringify(exportData), function (err) {
+    fs.mkdir('bin', { recursive: true }, (err) => {
+        if (err) throw err
+    })
+
+    fs.writeFile(`bin/${population}_${social}_${timesToRun}_${new Date().getTime()}.json`, JSON.stringify(exportData), function (err) {
         if (err) throw err
         console.log('File created')
     })
