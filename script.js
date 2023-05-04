@@ -45,6 +45,7 @@ function Person () {
     this.isAlive = true
     this.kill = () => {
         this.isAlive = false
+        this.isInfected = false
         totalDeaths++
         currentInfections--
         this.removeSelfFromInfectable()
